@@ -3,31 +3,38 @@ package mp3player;
 import java.io.File;
 import java.util.LinkedList;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 public class Playlist {
 	private String name;
-	private LinkedList<File> musics;
+	private DefaultListModel<Music> musics;
 	private int index;
 	
 	public Playlist(String name) {
 		super();
 		this.name = name;
-		this.musics = new LinkedList<File>();
+		this.musics = new DefaultListModel<Music>();
 		this.index = 0;
+	}
+	public Playlist(Playlist p){
+		this.name = p.name;
+		this.musics = p.musics;
+		this.index = p.index;
 	}
 	
 	public void removeMusic(int index) {
 		this.musics.remove(index);
 	}
 	
-	public void addMusic(File file) {
-		this.musics.add(file);
+	public void addMusic(Music m) {
+		this.musics.addElement(m);;
 	}
 	
-	public File GetMusic() {
-		return this.musics.get(this.index);
+	public Music GetMusic() {
+		return this.musics.get(index);
 	}
 	
-	public File nextMusic() {
+	public Music nextMusic() {
 		if(this.index < this.musics.size() - 1) {
 			this.index ++;
 			return this.musics.get(this.index);
@@ -37,7 +44,7 @@ public class Playlist {
 		}
 	}
 	
-	public File prevMusic() {
+	public Music prevMusic() {
 		if(this.index == 0) {
 			return this.musics.get(this.index);
 		}else {
@@ -51,14 +58,22 @@ public class Playlist {
 		}
 	}
 	public void Swap(int a, int b) {
-		File c = this.musics.get(a);
+		Music c = this.musics.getElementAt(a);
 		this.musics.remove(a);
 		this.musics.add(a, this.musics.get(b));
 		this.musics.remove(b);
 		this.musics.add(b, c);
 	}
 	
-	public String getName() {
+	@Override
+	public String toString() {
 		return this.name;
+	}
+	
+	public DefaultListModel<Music> getMusics() {
+		return this.musics;
+	}
+	public boolean contains(Music m) {
+		return musics.contains(m);
 	}
 }

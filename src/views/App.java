@@ -1,4 +1,13 @@
 package views;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import mp3player.PlayerManager;
 import userManagement.UserManager;
 public class App {
@@ -7,14 +16,43 @@ public class App {
 	static PlayerManager playerManager = new PlayerManager();
 	
 	public static void main(String[] args) {
-		LoginViews loginViews = new LoginViews();
-		loginViews.setVisible(true);
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		loginScreen();
 	}
 	
-	void LoginScreen() {
-		
+	static void loginScreen() {
+		LoginViews loginViews = new LoginViews(userManager);
+		loginViews.setVisible(true);
+		loginViews.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				playerScreen();
+			}
+		});
 	}
-	void playerScreen() {
-		
+	static void playerScreen() {
+		PlayerViews playerViews = new PlayerViews(playerManager, userManager);
+		playerViews.setVisible(true);
+		playerViews.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				loginScreen();
+			}
+		});
 	}
 }
