@@ -1,40 +1,29 @@
 package views;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
 import mp3player.Music;
 import mp3player.PlayerManager;
+import mp3player.Playlist;
 import userManagement.UserManager;
-
-import javax.swing.JMenuBar;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.ComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.awt.event.ActionEvent;
-import javax.swing.JList;
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.ScrollPane;
-import javax.swing.JToolBar;
-import javax.swing.JComboBox;
-import java.awt.List;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
 
 public class PlayerViews extends JFrame {
 
@@ -53,20 +42,23 @@ public class PlayerViews extends JFrame {
 	private JMenuItem mntmAddUser;
 	private JMenuItem mntmAddMusic;
 	private JMenuItem mntmChangeUser;
-	private JList allMusics;
-	private JList currentPlayList;
-	private JList playlists;
+	private JList<Music> allMusics;
+	private JList<Music> currentPlayList;
+	private JList<Playlist> playlists;
 	private AddUserDialog addUserDiag;
 	private JLabel lblMusicas;
 	private JLabel lblPlaylist;
 	private JLabel lblPlaylists;
 	private JLabel lblUsername;
+	private JButton btnEditPlaylists;
+	private EditPlaylistViews editPlaylistsViews;
 	
 	private void initComponents() {
 		addUserDiag = new AddUserDialog(userManager);
-		allMusics = new JList(playerManager.allMusics.getMusics()); 
-		currentPlayList = new JList(playerManager.allMusics.getMusics());
-		playlists = new JList(playerManager.playlists);
+		editPlaylistsViews = new EditPlaylistViews(playerManager); 
+		allMusics = new JList<Music>(playerManager.allMusics.getMusics()); 
+		currentPlayList = new JList<Music>(playerManager.allMusics.getMusics());
+		playlists = new JList<Playlist>(playerManager.playlists);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 640, 400);
@@ -146,10 +138,24 @@ public class PlayerViews extends JFrame {
 		lblPlaylists.setBounds(467, 135, 56, 16);
 		contentPane.add(lblPlaylists);
 		
-		lblUsername = new JLabel("username");
-		lblUsername.setBounds(467, 43, 141, 25);
+		lblUsername = new JLabel(userManager.getUsername());
+		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblUsername.setBounds(467, 59, 143, 31);
 		contentPane.add(lblUsername);
 		
+		btnEditPlaylists = new JButton("Edit Playlists");
+		btnEditPlaylists.setBounds(467, 103, 103, 25);
+		contentPane.add(btnEditPlaylists);
+		
+		JLabel lblUser = new JLabel("Usuario:");
+		lblUser.setBounds(467, 43, 56, 16);
+		contentPane.add(lblUser);
+		
+		if(!userManager.getVip()) {
+			btnEditPlaylists.setEnabled(false);
+			mntmAddUser.setEnabled(false);
+			playlists.setEnabled(false);
+		}
 	}
 	private void createEvents() {
 		btnPlay.addMouseListener(new MouseAdapter() {
@@ -222,6 +228,7 @@ public class PlayerViews extends JFrame {
 		});
 		mntmChangeUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				playerManager.stop();
 				dispose();
 			}
 		});
@@ -236,7 +243,12 @@ public class PlayerViews extends JFrame {
 				btnStop.setVisible(true);
 			}
 		});
-	
+		btnEditPlaylists.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				editPlaylistsViews.setVisible(true);
+			}
+		});
 	}
 	
 	public PlayerViews(PlayerManager p, UserManager u) {

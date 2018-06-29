@@ -3,25 +3,28 @@ package mp3player;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.LinkedList;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JList;
-
-import javazoom.jl.player.advanced.PlaybackListener;
-
+/**
+ * Gerencia o player, com uma lista de musicas que podem ser tocadas
+ * @author Matheus Rangel de Melo
+ *
+ */
 public class PlayerManager {
 	public Playlist currentPlaylist;
 	public Playlist allMusics;
 	public DefaultListModel<Playlist> playlists;
 	private Music currentMusic;
 	private Thread t;
-	
+	/**
+	 * Cria uma instancia do PlayerManager com as musicas encontradas no arquivos musicas.txt
+	 * Caso não encontre o arquivo a instancia será criada sem nenhuma musica
+	 * 
+	 */
 	public PlayerManager() {
 		this.playlists = new DefaultListModel<Playlist>();
 		this.allMusics = new Playlist("Todas as Musicas");
@@ -38,7 +41,6 @@ public class PlayerManager {
 					allMusics.addMusic(m);
 				}
 			}catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else {
@@ -50,9 +52,15 @@ public class PlayerManager {
 		}
 		this.currentMusic = null;
 	}
+	/**
+	 * Toca a musica atual
+	 */
 	public void play() {
 		if(currentMusic == null) {
-			currentMusic = currentPlaylist.GetMusic();
+			currentMusic = currentPlaylist.getMusic();
+		}
+		if(t != null) {
+			t.interrupt();
 		}
 		t = new Thread() {
 			@Override
@@ -62,13 +70,18 @@ public class PlayerManager {
 		};
 		t.start();
 	}
-	
+	/**
+	 * Para de tocar a musica atual.
+	 */
 	public void stop() {
 		if(t != null) {
 			t.interrupt();
 			currentMusic.close();
 		}
 	}
+	/**
+	 * Vai para a proxima musica.
+	 */
 	public void next() {
 		t.interrupt();
 		if(currentMusic != null)
@@ -76,6 +89,9 @@ public class PlayerManager {
 		currentMusic = currentPlaylist.nextMusic();
 		this.play();
 	}
+	/**
+	 * Volta a para a musica anterior
+	 */
 	public void prev() {
 		t.interrupt();
 		if(currentMusic != null)
@@ -83,17 +99,27 @@ public class PlayerManager {
 		currentMusic = currentPlaylist.prevMusic();
 		this.play();
 	}
-	
+	/**
+	 * Seleciona um playlist para tocar
+	 * @param index indice da playlist para tocar
+	 */
 	public void setPlaylist(int index){
 		this.currentPlaylist = this.playlists.elementAt(index);
-		currentMusic = currentPlaylist.GetMusic();
+		currentMusic = currentPlaylist.getMusic();
 	}
-	
+	/**
+	 * Seleciona uma musica da playlist atual para tocar
+	 * @param index indice da musica na playlist atual
+	 */
 	public void setCurrentMusic(int index) {
 		this.currentPlaylist.setIndex(index);
-		this.currentMusic = this.currentPlaylist.GetMusic();
+		this.currentMusic = this.currentPlaylist.getMusic();
 		
 	}
+	/**
+	 * Adiciona um nova musica ao PlayerManager
+	 * @param file arquivo da musica a ser adicionado
+	 */
 	public void addMusic(File file) {
 		Music m = new Music(file);
 		if(allMusics.contains(m)) {
@@ -112,10 +138,13 @@ public class PlayerManager {
 			}else
 				System.err.println("addMusic: Formato de arquivo não reconhecido");
 		}catch (IOException e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Adiciona todas as musicas de um diretorio ao PlayerManager
+	 * @param file Direto a ser adicionado
+	 */
 	public void addDirectory(File file) {
 		if(file.isDirectory()) {
 			File[] matchingFiles = file.listFiles(new FilenameFilter() {
@@ -130,6 +159,10 @@ public class PlayerManager {
 			System.err.println("addDirectory: Caminho especificado não é um diretorio");
 		}
 	}
+	/**
+	 * 
+	 * @return Nome da Musica atual.
+	 */
 	public String getMusicName() {
 		if(currentMusic != null)
 			return this.currentMusic.toString();

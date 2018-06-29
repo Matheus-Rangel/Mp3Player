@@ -1,11 +1,11 @@
 package mp3player;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 
 import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.*;
 import javazoom.jl.player.advanced.AdvancedPlayer;
-import javazoom.jl.player.advanced.PlaybackListener;
 
 
 public class Music {
@@ -42,6 +42,7 @@ public class Music {
 		return  this.file.getName().substring(0, this.file.getName().lastIndexOf('.')) ;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		try {
 			return toString().equals(((Music)obj).toString());

@@ -46,7 +46,7 @@ public class AddUserDialog extends JDialog {
 		contentPanel.add(lblUsername);
 		
 		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setBounds(62, 99, 78, 21);
+		lblPassword.setBounds(72, 101, 61, 21);
 		contentPanel.add(lblPassword);
 		
 		textUsername = new JTextField();
@@ -59,7 +59,7 @@ public class AddUserDialog extends JDialog {
 		contentPanel.add(passwordField);
 		
 		JLabel lblConfirmPassword = new JLabel("Confirm Password:");
-		lblConfirmPassword.setBounds(3, 132, 137, 21);
+		lblConfirmPassword.setBounds(24, 134, 109, 21);
 		contentPanel.add(lblConfirmPassword);
 		
 		PasswordFieldConfirm = new JPasswordField();

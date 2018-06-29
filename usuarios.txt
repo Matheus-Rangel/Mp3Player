@@ -1,2 +1,6 @@
 Vip: yes
 admin:
+Vip: yes
+matheus:123
+Vip: no
+comun:123

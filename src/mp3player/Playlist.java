@@ -1,10 +1,6 @@
 package mp3player;
 
-import java.io.File;
-import java.util.LinkedList;
-
 import javax.swing.DefaultListModel;
-import javax.swing.JList;
 public class Playlist {
 	private String name;
 	private DefaultListModel<Music> musics;
@@ -27,10 +23,10 @@ public class Playlist {
 	}
 	
 	public void addMusic(Music m) {
-		this.musics.addElement(m);;
+		this.musics.addElement(m);
 	}
 	
-	public Music GetMusic() {
+	public Music getMusic() {
 		return this.musics.get(index);
 	}
 	
@@ -73,7 +69,12 @@ public class Playlist {
 	public DefaultListModel<Music> getMusics() {
 		return this.musics;
 	}
+	
 	public boolean contains(Music m) {
 		return musics.contains(m);
+	}
+	
+	public void setName(String n) {
+		this.name = n;
 	}
 }

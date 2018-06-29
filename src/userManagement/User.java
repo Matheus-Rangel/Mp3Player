@@ -31,7 +31,10 @@ class User {
 	public int getId() {
 		return id;
 	}
-
+	
+	public boolean getVip() {
+		return vip;
+	}
 	@Override
 
 	public String toString() {
